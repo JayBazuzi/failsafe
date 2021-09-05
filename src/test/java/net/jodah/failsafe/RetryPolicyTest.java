@@ -139,6 +139,13 @@ public class RetryPolicyTest {
     assertFalse(policy.isAbortable(5, new IllegalArgumentException()));
   }
 
+  public void withBackoffIsAShortcutForDelayAndMaxDelayAndDelayFactor() {
+        assertEqual(
+          new RetryPolicy().withBackoff(2, 20, ChronoUnit.SECONDS, 2.5),
+          new RetryPolicy().withDelay(Duration.ofSeconds(2)).withMaxDelay(Duration.ofSeconds(20)).withDelayFactor(2.5)
+        );
+  }
+
   public void shouldRequireValidBackoff() {
     Asserts.assertThrows(() -> new RetryPolicy().withBackoff(0, 0, null), NullPointerException.class);
     Asserts.assertThrows(
